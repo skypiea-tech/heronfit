@@ -10,8 +10,11 @@ class RegistrationController extends StateNotifier<RegistrationModel> {
   RegistrationController(this._ref) : super(const RegistrationModel());
 
   void updateFirstName(String value) =>
-      state = state.copyWith(firstName: value);
-  void updateLastName(String value) => state = state.copyWith(lastName: value);
+      state = state.copyWith(firstName: _capitalizeFirstLetter(value));
+
+  void updateLastName(String value) =>
+      state = state.copyWith(lastName: _capitalizeFirstLetter(value));
+
   void updateEmail(String value) => state = state.copyWith(email: value);
   void updatePassword(String value) => state = state.copyWith(password: value);
   void updateGender(String value) => state = state.copyWith(gender: value);
@@ -90,6 +93,11 @@ class RegistrationController extends StateNotifier<RegistrationModel> {
       // For now, rethrow to indicate the step failed.
       throw Exception('Failed to save user profile details: ${e.toString()}');
     }
+  }
+
+  String _capitalizeFirstLetter(String value) {
+    if (value.isEmpty) return value;
+    return value[0].toUpperCase() + value.substring(1).toLowerCase();
   }
 }
 

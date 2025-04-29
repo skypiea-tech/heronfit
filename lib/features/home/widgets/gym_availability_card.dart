@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:solar_icons/solar_icons.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 import 'home_info_row.dart'; // Import the reusable row widget
 import '../../../core/theme.dart'; // Import HeronFitTheme
+import 'package:heronfit/features/booking/views/booking_screen.dart'; // Import SessionsRow and allSessions
 
 class GymAvailabilityCard extends StatelessWidget {
-  // TODO: Add parameters for dynamic data (date, time, capacity, onTap)
   const GymAvailabilityCard({super.key});
 
   @override
@@ -12,11 +13,24 @@ class GymAvailabilityCard extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
+    final currentDate = DateFormat('EEEE, MMMM d').format(DateTime.now()); // Get current day
+
+    final currentTime = DateTime.now();
+    final sessionStartHour = currentTime.hour;
+    final sessionStart = DateTime(currentTime.year, currentTime.month, currentTime.day, sessionStartHour);
+    final sessionEnd = sessionStart.add(const Duration(hours: 1));
+    final sessionTime = '${DateFormat('h:mm a').format(sessionStart)} - ${DateFormat('h:mm a').format(sessionEnd)}';
+
+    final sessionCount = filterSessionsByTime(
+      allSessions, // Use the imported allSessions variable
+      sessionTime,
+      DateTime.now(),
+    );
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: colorScheme.background,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12), // Slightly larger radius
         boxShadow: HeronFitTheme.cardShadow, // Use theme shadow
       ),
@@ -54,14 +68,14 @@ class GymAvailabilityCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const HomeInfoRow(
+            HomeInfoRow(
               icon: SolarIconsOutline.calendar,
-              text: 'Monday, October 25', // TODO: Replace with actual data
+              text: currentDate, // Use current day
             ),
             const SizedBox(height: 8),
-            const HomeInfoRow(
+            HomeInfoRow(
               icon: SolarIconsOutline.clockCircle,
-              text: '10:00 AM - 11:00 AM', // TODO: Replace with actual data
+              text: sessionTime, // Use current session time
             ),
             const SizedBox(height: 8),
             Row(
@@ -71,24 +85,24 @@ class GymAvailabilityCard extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Icon(
                     SolarIconsOutline.usersGroupRounded,
-                    color: colorScheme.onBackground,
+                    color: colorScheme.onSurface,
                     size: 24,
                   ),
                 ),
                 RichText(
                   text: TextSpan(
                     style: textTheme.labelMedium?.copyWith(
-                      color: colorScheme.onBackground,
+                      color: colorScheme.onSurface,
                     ),
-                    children: const [
+                    children: [
                       TextSpan(
-                        text: '10', // TODO: Replace with actual data
-                        style: TextStyle(
+                        text: '$sessionCount', // Display the count of booked sessions
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ), // Highlight number
                       ),
-                      TextSpan(
-                        text: '/15 capacity', // TODO: Replace with actual data
+                      const TextSpan(
+                        text: '/15 capacity', // TODO: Replace with actual capacity if dynamic
                       ),
                     ],
                   ),
@@ -99,5 +113,29 @@ class GymAvailabilityCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int? filterSessionsByTime(
+    List<SessionsRow>? sessions,
+    String? sessionTime,
+    DateTime? selectedDate,
+  ) {
+    if (sessions == null || sessionTime == null || selectedDate == null) {
+      return 0; // Return 0 if any parameter is null
+    }
+
+    final normalizedSessionTime = sessionTime.trim().toLowerCase();
+
+    final filteredSessions = sessions.where((session) {
+      final normalizedTime = session.time?.trim().toLowerCase() ?? '';
+      final matchesTime = normalizedTime == normalizedSessionTime;
+      final matchesDate = session.date?.toIso8601String().split('T').first ==
+          selectedDate.toIso8601String().split('T').first;
+      debugPrint('Session: ${session.time}, Date: ${session.date}');
+      debugPrint('Matches Time: $matchesTime, Matches Date: $matchesDate');
+      return matchesTime && matchesDate;
+    }).toList();
+
+    return filteredSessions.length;
   }
 }

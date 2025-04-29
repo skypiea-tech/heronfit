@@ -53,13 +53,8 @@ Future<List<SessionsRow>> fetchSessionsByEmail() async {
         .select()
         .eq('email', email);
 
-    if (response != null && response is List) {
-      return response.map((e) => SessionsRow.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to fetch sessions.');
-    }
+    return response.map((e) => SessionsRow.fromJson(e)).toList();
   } catch (e) {
-    debugPrint('Error fetching sessions by email: $e');
     return [];
   }
 }
@@ -137,14 +132,11 @@ class _BookingScreenState extends State<BookingScreen> {
         .select()
         .eq('date', selectedDate!.toIso8601String());
 
-    if (response != null && response is List) {
-      debugPrint('Fetched sessions: $response'); // Log the fetched data
-      setState(() {
-        allSessions = response.map((e) => SessionsRow.fromJson(e)).toList();
-      });
-    }
-  } catch (e) {
-    debugPrint('Error fetching session bookings: $e');
+    setState(() {
+      allSessions = response.map((e) => SessionsRow.fromJson(e)).toList();
+    });
+    } catch (e) {
+    // Handle error if needed
   }
 }
 
@@ -220,7 +212,7 @@ class _BookingScreenState extends State<BookingScreen> {
       onDaySelected: (selectedDay, focusedDay) {
         setState(() {
           selectedDate = selectedDay;
-          this.focusedDate = focusedDay;
+          focusedDate = focusedDay;
         });
         _fetchSessionBookings(); // Fetch bookings for the newly selected date
       },
@@ -242,145 +234,153 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   List<Widget> _buildSessionWidgets() {
-  final now = DateTime.now();
+    final now = DateTime.now();
 
-  return List.generate(9, (index) {
-    int sessionIndex = index + 1;
-    final sessionTime = textControllers[sessionIndex]?.text ?? '';
-    final sessionCount = filterSessionsByTime(
-      allSessions,
-      sessionTime,
-      selectedDate,
-    );
+    // Separate past and upcoming sessions
+    final pastSessions = <Widget>[];
+    final upcomingSessions = <Widget>[];
 
-    // Check if the session is in the past
-    final isPastSession =
-        selectedDate != null &&
-        (selectedDate!.isBefore(DateTime(now.year, now.month, now.day)) ||
-            (selectedDate!.isAtSameMomentAs(
-                  DateTime(now.year, now.month, now.day),
-                ) &&
-                _parseSessionTime(sessionTime)?.isBefore(now) == true));
+    for (int index = 0; index < 9; index++) {
+      int sessionIndex = index + 1;
+      final sessionTime = textControllers[sessionIndex]?.text ?? '';
+      final sessionCount = filterSessionsByTime(
+        allSessions,
+        sessionTime,
+        selectedDate,
+      );
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 10,
-              color: Colors.grey.withOpacity(0.2),
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Session details (time and slots)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.access_time,
-                      size: 20,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      sessionTime,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black, // Black text for session time
+      // Parse session start time
+      final sessionStartTime = _parseSessionStartTime(sessionTime);
+      final isPastSession = sessionStartTime != null && sessionStartTime.isBefore(now);
+
+      final sessionWidget = Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: isPastSession ? Colors.grey[300] : Colors.white, // Grey out past sessions
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                color: Colors.grey.withOpacity(0.2),
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Session details (time and slots)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.access_time,
+                        size: 20,
+                        color: Colors.grey,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.people, size: 20, color: Colors.grey),
-                    const SizedBox(width: 8),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '$sessionCount',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black, // Black text for count
-                            ),
-                          ),
-                          const TextSpan(
-                            text: '/15 slots',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey, // Grey text for slots
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            // Book button
-            ElevatedButton(
-              onPressed: isPastSession
-                  ? null
-                  : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ConfirmBookingScreen(
-                            date: selectedDate,
-                            time: sessionTime,
-                            email: getCurrentUserEmail(),
-                          ),
+                      const SizedBox(width: 8),
+                      Text(
+                        sessionTime,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isPastSession ? Colors.grey : Colors.black, // Grey text for past sessions
                         ),
-                      );
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isPastSession ? Colors.grey : const Color.fromRGBO(67, 59, 255, 1), // Blue for active, grey for disabled
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.people, size: 20, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '$sessionCount',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: isPastSession ? Colors.grey : Colors.black, // Grey text for past sessions
+                              ),
+                            ),
+                            TextSpan(
+                              text: '/15 slots',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: isPastSession ? Colors.grey : Colors.grey, // Grey text for slots
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              // Book button
+              ElevatedButton(
+                onPressed: isPastSession
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ConfirmBookingScreen(
+                              date: selectedDate,
+                              time: sessionTime,
+                              email: getCurrentUserEmail(),
+                            ),
+                          ),
+                        );
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isPastSession ? Colors.grey : const Color.fromRGBO(67, 59, 255, 1), // Blue for active, grey for disabled
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                child: const Text(
+                  'Book',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // White text for the button
+                  ),
                 ),
               ),
-              child: const Text(
-                'Book',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white, // White text for the button
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  });
-}
+      );
 
-  DateTime? _parseSessionTime(String sessionText) {
+      if (isPastSession) {
+        pastSessions.add(sessionWidget);
+      } else {
+        upcomingSessions.add(sessionWidget);
+      }
+    }
+
+    // Combine upcoming and past sessions
+    return [...upcomingSessions, ...pastSessions];
+  }
+
+  DateTime? _parseSessionStartTime(String sessionText) {
     try {
       final parts = sessionText.split(' - ');
-      if (parts.length == 2) {
-        final endTime = parts[1];
-        final parsedTime = DateFormat('h:mm a').parse(endTime);
+      if (parts.isNotEmpty) {
+        final startTime = parts[0];
+        final parsedTime = DateFormat('h:mm a').parse(startTime);
         return DateTime(
           selectedDate!.year,
           selectedDate!.month,
@@ -393,5 +393,26 @@ class _BookingScreenState extends State<BookingScreen> {
       // Ignore parsing errors
     }
     return null;
+  }
+}
+
+Future<void> bookSession(String sessionId, String userId) async {
+  try {
+    // Update the session booking in the sessions table
+    await Supabase.instance.client
+        .from('sessions')
+        .update({'ticket_status': 'booked'})
+        .eq('session_id', sessionId);
+
+    // Update the user's has_session status to true
+    await Supabase.instance.client
+        .from('users')
+        .update({'has_session': true})
+        .eq('id', userId);
+
+    debugPrint('Session booked successfully and user status updated.');
+  } catch (e) {
+    debugPrint('Error booking session: $e');
+    throw Exception('Failed to book session. Please try again.');
   }
 }
