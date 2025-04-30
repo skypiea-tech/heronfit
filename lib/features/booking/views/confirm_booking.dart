@@ -23,6 +23,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController ticketIdController = TextEditingController();
   final FocusNode ticketIdFocusNode = FocusNode();
+  bool noTicket = false; // Add a state variable for the checkbox
 
   @override
   void dispose() {
@@ -147,10 +148,11 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                   TextField(
                     controller: ticketIdController,
                     focusNode: ticketIdFocusNode,
+                    enabled: !noTicket, // Disable the textbox when the checkbox is checked
                     decoration: InputDecoration(
                       hintText: 'Enter Ticket ID',
                       filled: true,
-                      fillColor: const Color(0xFFF3F4F6),
+                      fillColor: noTicket ? Colors.grey[300] : const Color(0xFFF3F4F6), // Greyed out when disabled
                       prefixIcon: const Icon(
                         Icons.confirmation_number,
                         color: Colors.grey,
@@ -166,9 +168,22 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Leave the field blank if you don\'t have a ticket yet.',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  // Checkbox for users without a ticket
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: noTicket,
+                        onChanged: (value) {
+                          setState(() {
+                            noTicket = value ?? false;
+                          });
+                        },
+                      ),
+                      const Text(
+                        'I don\'t have a ticket yet',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -181,14 +196,14 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        if (ticketIdController.text.isNotEmpty) {
+                        if (ticketIdController.text.isNotEmpty || noTicket) {
                           final slotCapacity =
                               await fetchSlotCapacity(widget.time ?? '');
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => ReviewBookingDetailsScreen(
-                                ticketId: ticketIdController.text,
+                                ticketId: noTicket ? '' : ticketIdController.text!,
                                 date: widget.date,
                                 time: widget.time,
                                 email: widget.email,
@@ -196,7 +211,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                             ),
                           );
                         } else {
-                          _showErrorDialog(context, 'Invalid Ticket!');
+                          _showErrorDialog(context, 'Please provide a ticket ID or check the box.');
                         }
                       },
                       style: ElevatedButton.styleFrom(

@@ -9,8 +9,6 @@ class HeronFitTheme {
     colorScheme: ColorScheme.light(
       primary: primary,
       secondary: primaryDark,
-      background: bgLight,
-      onBackground: textPrimary,
       surface: Colors.white,
       onSurface: textPrimary,
       error: error,

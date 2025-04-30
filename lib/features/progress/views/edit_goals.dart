@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/theme.dart'; // Import HeronFitTheme
 import 'package:heronfit/features/progress/controllers/progress_controller.dart';
-import 'package:solar_icons/solar_icons.dart'; // Import SolarIcons
+// Import SolarIcons
 
 class EditGoalsWidget extends ConsumerStatefulWidget {
   const EditGoalsWidget({super.key});

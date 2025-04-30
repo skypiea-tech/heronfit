@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
-import 'package:go_router/go_router.dart'; // Import GoRouter
-import 'package:heronfit/core/router/app_routes.dart'; // Import AppRoutes
+// Import GoRouter
+// Import AppRoutes
 import 'package:heronfit/features/progress/controllers/progress_controller.dart'; // Import controller
-import 'package:heronfit/features/progress/models/progress_record.dart'; // Import model
+// Import model
 import 'package:heronfit/features/progress/widgets/progress_photo_list_item.dart'; // Import the reusable item widget
-import 'package:solar_icons/solar_icons.dart'; // Import SolarIcons
+// Import SolarIcons
 import 'package:heronfit/core/theme.dart'; // Import HeronFitTheme
 
 class ProgressPhotosListWidget extends ConsumerWidget {

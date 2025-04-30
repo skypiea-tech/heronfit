@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart';
-import 'package:heronfit/core/services/workout_storage_service.dart';
 import 'package:heronfit/core/theme.dart';
 import 'package:heronfit/features/workout/controllers/workout_providers.dart';
 import 'package:heronfit/features/workout/models/workout_model.dart';
@@ -32,7 +31,7 @@ class MyWorkoutTemplatesScreen extends ConsumerWidget {
       }
     }
 
-    Future<void> _showDeleteConfirmationDialog(
+    Future<void> showDeleteConfirmationDialog(
       BuildContext context,
       Workout template,
     ) async {
@@ -67,7 +66,7 @@ class MyWorkoutTemplatesScreen extends ConsumerWidget {
       );
     }
 
-    Future<void> _showDeleteAllConfirmationDialog(BuildContext context) async {
+    Future<void> showDeleteAllConfirmationDialog(BuildContext context) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // User must tap button!
@@ -153,7 +152,7 @@ class MyWorkoutTemplatesScreen extends ConsumerWidget {
                             ),
                             tooltip: 'Delete All Templates',
                             onPressed:
-                                () => _showDeleteAllConfirmationDialog(context),
+                                () => showDeleteAllConfirmationDialog(context),
                           )
                           : const SizedBox.shrink(),
               loading: () => const SizedBox.shrink(),
@@ -290,7 +289,7 @@ class MyWorkoutTemplatesScreen extends ConsumerWidget {
                       tooltip: 'Delete Template',
                       onPressed:
                           () =>
-                              _showDeleteConfirmationDialog(context, template),
+                              showDeleteConfirmationDialog(context, template),
                     ),
                     onTap: () {
                       context.push(

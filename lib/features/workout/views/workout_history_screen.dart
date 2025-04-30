@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
 import 'package:heronfit/features/workout/models/workout_model.dart';
-import 'package:go_router/go_router.dart';
-import 'package:solar_icons/solar_icons.dart';
 import '../../../core/theme.dart';
 import '../controllers/workout_providers.dart'; // Import providers
 

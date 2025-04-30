@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:heronfit/core/services/workout_recommendation_service.dart'; // Ensure this path is correct
+// Ensure this path is correct
 import 'package:heronfit/core/theme.dart';
 import 'package:heronfit/features/workout/controllers/workout_providers.dart'; // Assuming service provider is here
 import 'package:heronfit/widgets/loading_indicator.dart';

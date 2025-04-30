@@ -6,7 +6,6 @@ import 'package:heronfit/features/workout/models/exercise_model.dart'; // Import
 import 'package:heronfit/features/workout/models/set_data_model.dart'; // Import SetData
 import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart';
-import 'package:solar_icons/solar_icons.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'package:heronfit/features/workout/controllers/workout_providers.dart'; // Import providers
 

@@ -277,12 +277,15 @@ class _RegisterGettingToKnowScreenState
                                       decimal: true,
                                     ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty)
+                                  if (value == null || value.isEmpty) {
                                     return 'Enter weight';
-                                  if (double.tryParse(value) == null)
+                                  }
+                                  if (double.tryParse(value) == null) {
                                     return 'Invalid number';
-                                  if (double.parse(value) <= 0)
+                                  }
+                                  if (double.parse(value) <= 0) {
                                     return 'Must be > 0';
+                                  }
                                   return null;
                                 },
                                 autovalidateMode:
@@ -324,12 +327,15 @@ class _RegisterGettingToKnowScreenState
                                 style: HeronFitTheme.textTheme.bodyLarge,
                                 keyboardType: TextInputType.number,
                                 validator: (value) {
-                                  if (value == null || value.isEmpty)
+                                  if (value == null || value.isEmpty) {
                                     return 'Enter height';
-                                  if (int.tryParse(value) == null)
+                                  }
+                                  if (int.tryParse(value) == null) {
                                     return 'Invalid number';
-                                  if (int.parse(value) <= 0)
+                                  }
+                                  if (int.parse(value) <= 0) {
                                     return 'Must be > 0';
+                                  }
                                   return null;
                                 },
                                 autovalidateMode:

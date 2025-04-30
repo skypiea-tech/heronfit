@@ -7,7 +7,6 @@ import 'package:heronfit/core/theme.dart';
 import 'package:heronfit/widgets/exercise_card_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart';
-import 'package:solar_icons/solar_icons.dart';
 
 class StartNewWorkoutScreen extends ConsumerWidget {
   final Workout? initialWorkout;

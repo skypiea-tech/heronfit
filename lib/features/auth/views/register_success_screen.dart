@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart';
 import 'package:heronfit/core/theme.dart';
 import '../controllers/registration_controller.dart';
-import 'package:solar_icons/solar_icons.dart'; // Import SolarIcons
+// Import SolarIcons
 
 class RegisterSuccessScreen extends ConsumerWidget {
   const RegisterSuccessScreen({super.key});

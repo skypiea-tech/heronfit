@@ -194,12 +194,14 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value == null || value.isEmpty)
+                              if (value == null || value.isEmpty) {
                                 return 'Please enter your email';
+                              }
                               if (!RegExp(
                                 r'^.+@.+\.[a-zA-Z]+$',
-                              ).hasMatch(value))
+                              ).hasMatch(value)) {
                                 return 'Please enter a valid email'; // Basic email validation
+                              }
                               return null;
                             },
                             autofillHints: [AutofillHints.email],
@@ -235,10 +237,12 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value == null || value.isEmpty)
+                              if (value == null || value.isEmpty) {
                                 return 'Please enter a password';
-                              if (value.length < 6)
+                              }
+                              if (value.length < 6) {
                                 return 'Password must be at least 6 characters'; // Basic length check
+                              }
                               return null;
                             },
                             autofillHints: [AutofillHints.newPassword],

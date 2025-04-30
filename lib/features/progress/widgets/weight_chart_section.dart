@@ -74,7 +74,7 @@ class WeightChartSection extends ConsumerWidget {
               // Chart container with subtle background and rounded corners
               Container(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceVariant.withOpacity(0.18),
+                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.18),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

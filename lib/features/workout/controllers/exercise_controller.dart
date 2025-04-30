@@ -1,4 +1,3 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/exercise_model.dart';
 import '../../../core/services/supabase_client.dart';
 

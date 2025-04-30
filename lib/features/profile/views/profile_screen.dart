@@ -84,7 +84,7 @@ class ProfileScreen extends ConsumerWidget {
                         child: CircleAvatar(
                           radius: 40,
                           backgroundImage: avatarProvider,
-                          backgroundColor: colorScheme.surfaceVariant,
+                          backgroundColor: colorScheme.surfaceContainerHighest,
                           child:
                               avatarProvider == null
                                   ? Icon(

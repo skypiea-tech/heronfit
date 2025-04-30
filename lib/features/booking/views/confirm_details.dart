@@ -40,7 +40,7 @@ class _ReviewBookingDetailsScreenState
       'user_id': user.id,
       'email': widget.email,
       'ticket_id': widget.ticketId,
-      'ticket_status': 'confirmed', // Default status
+      'ticket_status': 'unconfirmed', // Default status
     }).select();
 
     if (response == null || response.isEmpty) {

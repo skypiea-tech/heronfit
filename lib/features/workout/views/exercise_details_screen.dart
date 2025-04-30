@@ -43,7 +43,7 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
             ),
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -296,7 +296,7 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).colorScheme.surfaceVariant.withAlpha(50),
+                      ).colorScheme.surfaceContainerHighest.withAlpha(50),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Center(

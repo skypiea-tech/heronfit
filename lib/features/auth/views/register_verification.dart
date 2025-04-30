@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart';
@@ -9,7 +8,7 @@ import '../controllers/verify_email_controller.dart'; // Import verification log
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import '../../../widgets/loading_indicator.dart'; // Import LoadingIndicator
 import 'package:pinput/pinput.dart';
-import 'package:solar_icons/solar_icons.dart'; // Import SolarIcons
+// Import SolarIcons
 
 class RegisterVerificationScreen extends ConsumerStatefulWidget {
   const RegisterVerificationScreen({super.key});

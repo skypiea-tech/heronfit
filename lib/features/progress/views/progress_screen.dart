@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:heronfit/core/router/app_routes.dart';
-import 'package:heronfit/core/theme.dart';
 import 'package:heronfit/features/progress/controllers/progress_controller.dart';
 import 'package:heronfit/features/progress/widgets/goals_section.dart';
-import 'package:heronfit/features/progress/widgets/monthly_stats_section.dart';
-import 'package:heronfit/features/progress/widgets/personal_bests_section.dart';
 import 'package:heronfit/features/progress/widgets/weight_chart_section.dart';
 import 'package:heronfit/features/progress/widgets/weight_log_section.dart';
-import 'package:heronfit/widgets/loading_indicator.dart';
-import 'package:solar_icons/solar_icons.dart';
 
 class ProgressScreen extends ConsumerWidget {
   const ProgressScreen({super.key});

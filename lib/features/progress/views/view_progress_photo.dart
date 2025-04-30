@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart'; // Import AppRoutes
 import 'package:heronfit/core/theme.dart'; // Import HeronFitTheme
 import 'package:heronfit/features/progress/controllers/progress_controller.dart';
-import 'package:heronfit/features/progress/models/progress_record.dart';
 import 'package:intl/intl.dart';
 import 'package:solar_icons/solar_icons.dart'; // Import SolarIcons
 import 'dart:ui'; // Import dart:ui for PointMode

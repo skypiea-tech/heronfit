@@ -30,7 +30,7 @@ class HomeInfoRow extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: Icon(
             icon,
-            color: iconColor ?? colorScheme.onBackground,
+            color: iconColor ?? colorScheme.onSurface,
             size: 24,
           ),
         ),
@@ -38,7 +38,7 @@ class HomeInfoRow extends StatelessWidget {
           child: Text(
             text,
             style: textTheme.labelMedium?.copyWith(
-              color: textColor ?? colorScheme.onBackground,
+              color: textColor ?? colorScheme.onSurface,
               fontWeight: fontWeight,
             ),
             overflow: TextOverflow.ellipsis,

@@ -3,11 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heronfit/core/router/app_routes.dart';
 import 'package:heronfit/features/progress/controllers/progress_controller.dart';
-import 'package:heronfit/features/progress/models/progress_record.dart';
 import 'package:heronfit/features/progress/widgets/weight_chart_section.dart'; // Reuse existing chart section
 import 'package:heronfit/widgets/loading_indicator.dart';
-import 'package:intl/intl.dart';
-import 'dart:math'; // For min
+// For min
 import 'package:heronfit/features/progress/widgets/progress_photo_list_item.dart'; // Import the new widget
 import 'package:heronfit/core/theme.dart';
 

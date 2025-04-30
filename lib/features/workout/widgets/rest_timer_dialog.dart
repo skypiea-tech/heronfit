@@ -13,14 +13,14 @@ class RestTimerDialog extends StatefulWidget {
   final int setNumber;
 
   const RestTimerDialog({
-    Key? key,
+    super.key,
     required this.initialDuration,
     required this.onSkip,
     required this.onTimerEnd,
     this.onAdjustDuration,
     required this.exerciseName,
     required this.setNumber,
-  }) : super(key: key);
+  });
 
   @override
   _RestTimerDialogState createState() => _RestTimerDialogState();

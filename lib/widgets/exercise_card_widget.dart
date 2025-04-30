@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart'; // Import for debugPrint
+// Import for debugPrint
 import 'package:heronfit/core/theme.dart';
 import 'package:heronfit/features/workout/models/exercise_model.dart';
 import 'package:solar_icons/solar_icons.dart'; // Import icons

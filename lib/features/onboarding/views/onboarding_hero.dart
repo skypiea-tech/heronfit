@@ -35,7 +35,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
+                SizedBox(
                   height: 40.0,
                   child: Image.asset(
                     'assets/images/logotype_heronfit.png',
@@ -44,7 +44,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 ),
                 const Spacer(flex: 1),
 
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Image.asset(
                     'assets/images/onboarding_hero.png',

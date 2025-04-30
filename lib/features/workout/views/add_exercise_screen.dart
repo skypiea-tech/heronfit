@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../models/exercise_model.dart';
 import '../controllers/exercise_controller.dart';
-import 'exercise_details_screen.dart';
-import 'package:go_router/go_router.dart'; // Import GoRouter
+// Import GoRouter
 import 'package:solar_icons/solar_icons.dart'; // Add this import
 import 'package:heronfit/core/theme.dart'; // Import HeronFitTheme
 import '../widgets/add_exercise_list_item.dart'; // Import the new widget
@@ -31,7 +29,7 @@ class AddExerciseScreenState extends State<AddExerciseScreen> {
   final ExerciseController _exerciseController = ExerciseController();
 
   List<String> _availableEquipment = [];
-  List<String> _selectedEquipment = [];
+  final List<String> _selectedEquipment = [];
   bool _isFilterExpanded = false;
   bool _isLoadingEquipment = false;
 
@@ -320,8 +318,8 @@ class AddExerciseScreenState extends State<AddExerciseScreen> {
                                       tapTargetSize:
                                           MaterialTapTargetSize.shrinkWrap,
                                     ),
-                                    child: Text('Clear All'),
                                     onPressed: _clearFilters,
+                                    child: Text('Clear All'),
                                   ),
                               ],
                             ),
@@ -472,8 +470,8 @@ class AddExerciseScreenState extends State<AddExerciseScreen> {
                                       Theme.of(context).colorScheme.secondary,
                                   foregroundColor: Colors.white,
                                 ),
-                                child: Text('Clear Filters'),
                                 onPressed: _clearFilters,
+                                child: Text('Clear Filters'),
                               ),
                             ],
                           ],
@@ -530,7 +528,7 @@ class AddExerciseScreenState extends State<AddExerciseScreen> {
     TextStyle style,
   ) {
     if (highlight.isEmpty ||
-        text.toLowerCase().indexOf(highlight.toLowerCase()) == -1) {
+        !text.toLowerCase().contains(highlight.toLowerCase())) {
       return TextSpan(text: text, style: style);
     }
 

@@ -237,8 +237,9 @@ class _UpdateWeightWidgetState extends ConsumerState<UpdateWeightWidget> {
                                         child,
                                         loadingProgress,
                                       ) {
-                                        if (loadingProgress == null)
+                                        if (loadingProgress == null) {
                                           return child;
+                                        }
                                         return Center(
                                           child: SizedBox(
                                             width: 40,

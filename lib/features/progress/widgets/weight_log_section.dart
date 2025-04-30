@@ -85,7 +85,7 @@ class WeightLogSection extends ConsumerWidget {
                                 ),
                                 subtitle: Text(
                                   DateFormat(
-                                    'MMMM d, yyyy \at hh:mm a',
+                                    'MMMM d, yyyy at hh:mm a',
                                   ).format(record.date.toLocal()),
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     fontSize: 12,

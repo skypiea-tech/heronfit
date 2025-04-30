@@ -1,89 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/gestures.dart';
-import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:heronfit/core/router/app_routes.dart';
 import '../../../core/theme.dart';
-import 'package:solar_icons/solar_icons.dart';
-import '../../../widgets/loading_indicator.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginWidget extends StatefulWidget {
+  const LoginWidget({super.key});
 
   static String routeName = 'Login';
-  static String routePath = AppRoutes.login;
+  static String routePath = '/login';
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginWidget> createState() => _LoginWidgetState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginWidgetState extends State<LoginWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final FocusNode emailFocusNode = FocusNode();
+  final TextEditingController emailAddressTextController =
+      TextEditingController();
+  final TextEditingController passwordTextController = TextEditingController();
+  final FocusNode emailAddressFocusNode = FocusNode();
   final FocusNode passwordFocusNode = FocusNode();
-
-  bool _passwordVisible = false;
-  bool _isLoading = false;
+  bool passwordVisibility = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    emailFocusNode.dispose();
+    emailAddressTextController.dispose();
+    passwordTextController.dispose();
+    emailAddressFocusNode.dispose();
     passwordFocusNode.dispose();
     super.dispose();
-  }
-
-  Future<void> _signIn() async {
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-    setState(() => _isLoading = true);
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    try {
-      final response = await Supabase.instance.client.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-      if (response.user != null) {
-        if (!mounted) return;
-        context.go(AppRoutes.home);
-      } else {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login failed. Please check your credentials.'),
-            backgroundColor: HeronFitTheme.error,
-          ),
-        );
-      }
-    } on AuthException catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login Error: ${e.message}'),
-          backgroundColor: HeronFitTheme.error,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('An unexpected error occurred: ${e.toString()}'),
-          backgroundColor: HeronFitTheme.error,
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
   }
 
   @override
@@ -96,209 +40,297 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: HeronFitTheme.bgLight,
-        appBar: AppBar(
-          backgroundColor: HeronFitTheme.bgLight,
-          elevation: 0,
-          leading: BackButton(color: HeronFitTheme.primaryDark),
-        ),
         body: SafeArea(
           top: true,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Title Section
-                      Text(
-                        'Great to See You Again!',
-                        textAlign: TextAlign.center,
-                        style: HeronFitTheme.textTheme.titleMedium?.copyWith(
-                          color: HeronFitTheme.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Let's Pick Up Where You Left Off.",
-                        textAlign: TextAlign.center,
-                        style: HeronFitTheme.textTheme.headlineSmall?.copyWith(
-                          color: HeronFitTheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Email Field
-                      TextFormField(
-                        controller: _emailController,
-                        focusNode: emailFocusNode,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null || value.isEmpty)
-                            return 'Please enter your email';
-                          if (!RegExp(r'^.+@.+\.[a-zA-Z]+$').hasMatch(value))
-                            return 'Please enter a valid email';
-                          return null;
-                        },
-                        autofillHints: [AutofillHints.email],
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: const Icon(
-                            SolarIconsOutline.letter,
-                            color: HeronFitTheme.primary,
-                            size: 20,
-                          ),
-                          filled: true,
-                          fillColor: HeronFitTheme.bgSecondary,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
-                          ),
-                        ),
-                        style: HeronFitTheme.textTheme.bodyLarge,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password Field
-                      TextFormField(
-                        controller: _passwordController,
-                        focusNode: passwordFocusNode,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null || value.isEmpty)
-                            return 'Please enter your password';
-                          return null;
-                        },
-                        autofillHints: [AutofillHints.password],
-                        obscureText: !_passwordVisible,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (_) => _signIn(),
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: const Icon(
-                            SolarIconsOutline.lockPassword,
-                            color: HeronFitTheme.primary,
-                            size: 20,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _passwordVisible
-                                  ? SolarIconsOutline.eye
-                                  : SolarIconsOutline.eyeClosed,
-                              color: HeronFitTheme.textMuted,
-                              size: 20,
+          child: Align(
+            alignment: AlignmentDirectional(0, 0),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(24, 48, 24, 48),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional(0, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              'Great To See You Again!',
+                              textAlign: TextAlign.center,
+                              style: HeronFitTheme.textTheme.headlineMedium
+                                  ?.copyWith(
+                                    color: HeronFitTheme.primary,
+                                    letterSpacing: 0.0,
+                                  ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _passwordVisible = !_passwordVisible;
-                              });
-                            },
-                          ),
-                          filled: true,
-                          fillColor: HeronFitTheme.bgSecondary,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
-                          ),
-                        ),
-                        style: HeronFitTheme.textTheme.bodyLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      // Forgot Password
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            // TODO: Implement forgot password navigation/logic
-                            print('Forgot Password Tapped');
-                            // Example: context.push(AppRoutes.forgotPassword);
-                          },
-                          child: Text(
-                            'Forgot your password?',
-                            style: HeronFitTheme.textTheme.bodyMedium?.copyWith(
-                              color: HeronFitTheme.textMuted,
+                            Text(
+                              'Let\'s pick up where you left off.',
+                              textAlign: TextAlign.center,
+                              style: HeronFitTheme.textTheme.headlineLarge
+                                  ?.copyWith(
+                                    color: HeronFitTheme.primary,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Login Button
-                      if (_isLoading)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.0),
-                            child: LoadingIndicator(),
-                          ),
-                        )
-                      else
-                        ElevatedButton.icon(
-                          onPressed: _signIn,
-                          icon: const Icon(
-                            SolarIconsOutline.login_3,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          label: const Text('Login'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: HeronFitTheme.primary,
-                            foregroundColor: HeronFitTheme.bgLight,
-                            minimumSize: const Size(double.infinity, 52),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            textStyle: HeronFitTheme.textTheme.titleSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      const SizedBox(height: 24),
-                      // Register Link
-                      Center(
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: HeronFitTheme.textTheme.bodyMedium?.copyWith(
-                              color: HeronFitTheme.textMuted,
-                            ),
+                        SizedBox(height: 48), // Add spacing between sections
+                        Form(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
                             children: [
-                              const TextSpan(
-                                text: "Don't have an account yet? ",
-                              ),
-                              TextSpan(
-                                text: 'Register',
-                                style: TextStyle(
-                                  color: HeronFitTheme.primary,
-                                  fontWeight: FontWeight.bold,
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                  0,
+                                  0,
+                                  0,
+                                  16,
                                 ),
-                                recognizer:
-                                    TapGestureRecognizer()
-                                      ..onTap = () {
-                                        context.push(AppRoutes.register);
-                                      },
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    controller: emailAddressTextController,
+                                    focusNode: emailAddressFocusNode,
+                                    autofocus: true,
+                                    autofillHints: [AutofillHints.email],
+                                    obscureText: false,
+                                    decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      labelStyle: HeronFitTheme
+                                          .textTheme
+                                          .labelMedium
+                                          ?.copyWith(letterSpacing: 0.0),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Color(0x00000000),
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: HeronFitTheme.primaryDark,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: HeronFitTheme.error,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: HeronFitTheme.error,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      filled: true,
+                                      fillColor: HeronFitTheme.bgSecondary,
+                                      prefixIcon: Icon(
+                                        Icons.email_outlined,
+                                        color: HeronFitTheme.textMuted,
+                                      ),
+                                    ),
+                                    style: HeronFitTheme.textTheme.labelMedium
+                                        ?.copyWith(letterSpacing: 0.0),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                  0,
+                                  0,
+                                  0,
+                                  16,
+                                ),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    controller: passwordTextController,
+                                    focusNode: passwordFocusNode,
+                                    autofocus: true,
+                                    autofillHints: [AutofillHints.password],
+                                    obscureText: !passwordVisibility,
+                                    decoration: InputDecoration(
+                                      labelText: 'Password',
+                                      labelStyle: HeronFitTheme
+                                          .textTheme
+                                          .labelMedium
+                                          ?.copyWith(letterSpacing: 0.0),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Color(0x00000000),
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: HeronFitTheme.primaryDark,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: HeronFitTheme.error,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: HeronFitTheme.error,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      filled: true,
+                                      fillColor: HeronFitTheme.bgSecondary,
+                                      prefixIcon: Icon(
+                                        Icons.lock_outline,
+                                        color: HeronFitTheme.textMuted,
+                                      ),
+                                      suffixIcon: InkWell(
+                                        onTap:
+                                            () => setState(
+                                              () =>
+                                                  passwordVisibility =
+                                                      !passwordVisibility,
+                                            ),
+                                        focusNode: FocusNode(
+                                          skipTraversal: true,
+                                        ),
+                                        child: Icon(
+                                          passwordVisibility
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                          color: HeronFitTheme.textMuted,
+                                          size: 22,
+                                        ),
+                                      ),
+                                    ),
+                                    style: HeronFitTheme.textTheme.labelMedium
+                                        ?.copyWith(letterSpacing: 0.0),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                splashColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onTap: () {
+                                  // ForgotPassword
+                                },
+                                child: Text(
+                                  'Forgot your password?',
+                                  style: HeronFitTheme.textTheme.labelMedium
+                                      ?.copyWith(
+                                        letterSpacing: 0.0,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                  Align(
+                    alignment: AlignmentDirectional(0, 1),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Log In
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: HeronFitTheme.primaryDark,
+                              foregroundColor: HeronFitTheme.bgLight,
+                              minimumSize: Size(double.infinity, 48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.login,
+                                  color: HeronFitTheme.bgLight,
+                                  size: 24,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Login',
+                                  style: HeronFitTheme.textTheme.titleSmall
+                                      ?.copyWith(
+                                        color: HeronFitTheme.bgLight,
+                                        letterSpacing: 0.0,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional(0, 0),
+                          child: InkWell(
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () {
+                              // Register
+                            },
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Don\'t have an account yet? ',
+                                    style: HeronFitTheme.textTheme.labelMedium
+                                        ?.copyWith(
+                                          color: HeronFitTheme.primary,
+                                          letterSpacing: 0.0,
+                                        ),
+                                  ),
+                                  TextSpan(
+                                    text: 'Register',
+                                    style: HeronFitTheme.textTheme.labelMedium
+                                        ?.copyWith(
+                                          color: HeronFitTheme.primary,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
